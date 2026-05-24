@@ -6,8 +6,9 @@ import { EventDetailPanel } from "./components/EventDetailPanel";
 import { PersonModal } from "./components/PersonModal";
 import { PeopleExplorer } from "./components/PeopleExplorer";
 import { ScheduleView } from "./components/ScheduleView";
+import { MapView } from "./components/MapView";
 
-type Tab = "timeline" | "people" | "schedule";
+type Tab = "timeline" | "people" | "schedule" | "map";
 
 export default function App() {
   const { data, getEvent, getPerson } = useEventData();
@@ -22,6 +23,7 @@ export default function App() {
     { key: "timeline", label: "Timeline", icon: "📅" },
     { key: "people", label: "People", icon: "👥" },
     { key: "schedule", label: "My Schedule", icon: "✓" },
+    { key: "map", label: "Map", icon: "🗺️" },
   ];
 
   return (
@@ -89,6 +91,12 @@ export default function App() {
         {activeTab === "schedule" && (
           <div className="animate-fade-in">
             <ScheduleView />
+          </div>
+        )}
+
+        {activeTab === "map" && (
+          <div className="animate-fade-in">
+            <MapView onSelectEvent={setSelectedEventId} />
           </div>
         )}
       </main>
