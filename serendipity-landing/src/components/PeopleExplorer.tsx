@@ -8,10 +8,24 @@ export function PeopleExplorer({
 }: {
   onPersonClick: (apiId: string) => void;
 }) {
-  const { allPeople } = useEventData();
+  const { allPeople, getEvent } = useEventData();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "connections" | "super" | "bio">("all");
   const [sortBy, setSortBy] = useState<"events" | "name">("events");
+
+  function resolvePersonLocation(person: PersonSummary): string | null {
+    if (person.location) return person.location;
+
+    const cityCounts = new Map<string, number>();
+    for (const eventId of person.events_attending) {
+      const city = getEvent(eventId)?.location?.city?.trim();
+      if (!city) continue;
+      cityCounts.set(city, (cityCounts.get(city) ?? 0) + 1);
+    }
+
+    const topCity = [...cityCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    return topCity ? `${topCity} (event city)` : null;
+  }
 
   const filtered = useMemo(() => {
     let list = allPeople;
@@ -28,7 +42,7 @@ export function PeopleExplorer({
           (p.linkedin_company?.toLowerCase().includes(q) ?? false) ||
           (p.bio?.toLowerCase().includes(q) ?? false) ||
           (p.linkedin_position?.toLowerCase().includes(q) ?? false) ||
-          (p.location?.toLowerCase().includes(q) ?? false)
+          (resolvePersonLocation(p)?.toLowerCase().includes(q) ?? false)
       );
     }
 
@@ -108,7 +122,12 @@ export function PeopleExplorer({
       {/* grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {filtered.slice(0, showCount).map((p) => (
-          <PersonRow key={p.api_id} person={p} onClick={() => onPersonClick(p.api_id)} />
+          <PersonRow
+            key={p.api_id}
+            person={p}
+            locationText={resolvePersonLocation(p)}
+            onClick={() => onPersonClick(p.api_id)}
+          />
         ))}
       </div>
 
@@ -127,7 +146,15 @@ export function PeopleExplorer({
   );
 }
 
-function PersonRow({ person, onClick }: { person: PersonSummary; onClick: () => void }) {
+function PersonRow({
+  person,
+  locationText,
+  onClick,
+}: {
+  person: PersonSummary;
+  locationText: string | null;
+  onClick: () => void;
+}) {
   return (
     <div
       onClick={onClick}
@@ -153,9 +180,9 @@ function PersonRow({ person, onClick }: { person: PersonSummary; onClick: () => 
           )}
         </div>
 
-        {person.location && (
+        {locationText && (
           <p className="text-[11px] text-[var(--color-text-muted)] mb-1">
-            📍 {person.location}
+            📍 {locationText}
           </p>
         )}
         

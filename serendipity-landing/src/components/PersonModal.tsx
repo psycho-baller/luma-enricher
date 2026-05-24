@@ -28,6 +28,20 @@ export function PersonModal({
     .map((id) => getEvent(id))
     .filter(Boolean);
 
+  const resolvedLocation = (() => {
+    if (person.location) return person.location;
+
+    const cityCounts = new Map<string, number>();
+    for (const event of events) {
+      const city = event?.location?.city?.trim();
+      if (!city) continue;
+      cityCounts.set(city, (cityCounts.get(city) ?? 0) + 1);
+    }
+
+    const topCity = [...cityCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    return topCity ? `${topCity} (event city)` : null;
+  })();
+
   const socials = [
     person.linkedin_url && { label: "LinkedIn", url: person.linkedin_url, icon: "🔗" },
     person.twitter && { label: "Twitter", url: `https://twitter.com/${person.twitter}`, icon: "𝕏" },
@@ -76,9 +90,9 @@ export function PersonModal({
                     {person.linkedin_position}{person.linkedin_position && person.linkedin_company ? " at " : ""}<span className="text-[var(--color-text-primary)]">{person.linkedin_company}</span>
                   </p>
                 )}
-                {person.location && (
+                {resolvedLocation && (
                   <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                    📍 {person.location}
+                    📍 {resolvedLocation}
                   </p>
                 )}
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
