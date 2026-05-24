@@ -165,21 +165,13 @@ function main() {
   data.generated_at = new Date().toISOString();
   writeFileSync(OUT_PATH, JSON.stringify(data, null, 2));
 
-  const events = data.days.flatMap((day: { events: { serendipity: { score: number; warm_connections: string[] } }[] }) => day.events);
   const landingStats = {
     total_events: data.stats.total_events,
+    total_days: data.stats.total_days,
     total_unique_guests: data.stats.total_unique_guests,
-    average_serendipity_score: Math.round(
-      events.reduce((sum: number, event: { serendipity: { score: number } }) => sum + event.serendipity.score, 0) /
-        Math.max(events.length, 1)
-    ),
-    warm_intro_paths: events.reduce(
-      (sum: number, event: { serendipity: { warm_connections: string[] } }) =>
-        sum + event.serendipity.warm_connections.length,
-      0
-    ),
-    events_with_high_signal: events.filter((event: { serendipity: { score: number } }) => event.serendipity.score >= 70)
-      .length,
+    total_warm_connections: data.stats.total_warm_connections,
+    guest_lists_available: data.stats.guest_lists_available,
+    guest_lists_hidden: data.stats.guest_lists_hidden,
   };
   writeFileSync(LANDING_STATS_PATH, JSON.stringify(landingStats, null, 2) + "\n");
 

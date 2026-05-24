@@ -1,7 +1,8 @@
 {
   "total_events": 34,
+  "total_days": 7,
   "total_unique_guests": 2127,
-  "average_serendipity_score": 41,
-  "warm_intro_paths": 40,
-  "events_with_high_signal": 7
+  "total_warm_connections": 28,
+  "guest_lists_available": 14,
+  "guest_lists_hidden": 20
 }
