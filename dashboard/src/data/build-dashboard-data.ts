@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 // -- types matching dashboard/src/lib/types.ts --
@@ -157,22 +157,111 @@ function computeRelevanceScore(text: string): number {
   return Math.min(hits / 5, 1.0) * 100;
 }
 
+type BuildOptions = {
+  enrichedPath: string;
+  connectionsPath: string;
+  messagesPath: string;
+  locationsPath: string;
+  outputPath: string;
+};
+
+const dataScriptDir = import.meta.dir;
+const lumaEnricherRoot = resolve(dataScriptDir, "../../..");
+const networkRoot = resolve(lumaEnricherRoot, "..");
+
+function parseArgs(argv: string[]): BuildOptions {
+  if (argv.includes("--help") || argv.includes("-h")) {
+    printUsage();
+    process.exit(0);
+  }
+
+  const byFlag = new Map<string, string>();
+  for (let i = 0; i < argv.length; i++) {
+    const token = argv[i];
+    if (!token.startsWith("--")) continue;
+    const value = argv[i + 1];
+    if (!value || value.startsWith("--")) {
+      throw new Error(`missing value for ${token}`);
+    }
+    byFlag.set(token, value);
+    i++;
+  }
+
+  return {
+    enrichedPath:
+      byFlag.get("--enriched") ??
+      process.env.LUMA_ENRICHED_JSON ??
+      "/tmp/luma-enriched.json",
+    connectionsPath:
+      byFlag.get("--connections") ??
+      process.env.LINKEDIN_CONNECTIONS_CSV ??
+      resolve(networkRoot, "linkedin-data-export/Connections.csv"),
+    messagesPath:
+      byFlag.get("--messages") ??
+      process.env.LINKEDIN_MESSAGES_CSV ??
+      resolve(networkRoot, "linkedin-data-export/messages.csv"),
+    locationsPath:
+      byFlag.get("--locations") ??
+      process.env.CONNECTION_LOCATIONS_CSV ??
+      resolve(networkRoot, "custom-data/connection_locations.csv"),
+    outputPath:
+      byFlag.get("--out") ??
+      process.env.DASHBOARD_DATA_OUT ??
+      resolve(dataScriptDir, "dashboard.json"),
+  };
+}
+
+function printUsage(): void {
+  console.log(`Build dashboard data from enriched Luma + LinkedIn exports.
+
+Usage:
+  bun run src/data/build-dashboard-data.ts [options]
+
+Options:
+  --enriched <path>      Enriched JSON from luma-enricher enrich
+  --connections <path>   LinkedIn Connections.csv
+  --messages <path>      LinkedIn messages.csv
+  --locations <path>     Optional connection_locations.csv
+  --out <path>           Output JSON path (default: src/data/dashboard.json)
+  --help                 Show this help
+
+Environment variable fallbacks:
+  LUMA_ENRICHED_JSON, LINKEDIN_CONNECTIONS_CSV, LINKEDIN_MESSAGES_CSV,
+  CONNECTION_LOCATIONS_CSV, DASHBOARD_DATA_OUT
+`);
+}
+
+function readRequiredFile(path: string, label: string): string {
+  if (!existsSync(path)) {
+    throw new Error(`${label} not found at ${path}`);
+  }
+  return readFileSync(path, "utf-8");
+}
+
+function readOptionalFile(path: string): string | null {
+  if (!existsSync(path)) return null;
+  return readFileSync(path, "utf-8");
+}
+
 // -- main --
 
 function main() {
+  const options = parseArgs(process.argv.slice(2));
   console.log("Building dashboard data...");
+  console.log(`  Enriched JSON: ${options.enrichedPath}`);
+  console.log(`  Connections CSV: ${options.connectionsPath}`);
+  console.log(`  Messages CSV: ${options.messagesPath}`);
+  console.log(`  Locations CSV: ${options.locationsPath}`);
+  console.log(`  Output JSON: ${options.outputPath}`);
 
   // 1. read luma data
-  const lumaRaw = JSON.parse(readFileSync("/tmp/luma-enriched.json", "utf-8"));
+  const lumaRaw = JSON.parse(readRequiredFile(options.enrichedPath, "Enriched JSON"));
   const lumaEvents: any[] = lumaRaw.events ?? [];
   const lumaUser = lumaRaw.user ?? {};
   console.log(`  Luma events: ${lumaEvents.length}`);
 
   // 2. read linkedin connections
-  const connectionsText = readFileSync(
-    resolve("/Users/rami/Documents/life-os/network/linkedin-data-export/Connections.csv"),
-    "utf-8"
-  );
+  const connectionsText = readRequiredFile(options.connectionsPath, "LinkedIn Connections CSV");
   // skip first 3 notice lines
   const connectionsCSV = connectionsText.split("\n").slice(3).join("\n");
   const connections = parseCSV(connectionsCSV);
@@ -198,10 +287,7 @@ function main() {
   console.log(`  LinkedIn slugs indexed: ${slugToConnection.size}`);
 
   // 3. read linkedin messages for recency
-  const messagesText = readFileSync(
-    resolve("/Users/rami/Documents/life-os/network/linkedin-data-export/messages.csv"),
-    "utf-8"
-  );
+  const messagesText = readRequiredFile(options.messagesPath, "LinkedIn messages CSV");
   const messages = parseCSV(messagesText);
   console.log(`  LinkedIn messages: ${messages.length}`);
 
@@ -232,11 +318,8 @@ function main() {
   console.log(`  Message recency indexed: ${slugToLastMessage.size} people`);
 
   // 3b. read custom connection locations
-  const connectionLocationsText = readFileSync(
-    resolve("/Users/rami/Documents/life-os/network/custom-data/connection_locations.csv"),
-    "utf-8"
-  );
-  const connectionLocations = parseCSV(connectionLocationsText);
+  const connectionLocationsText = readOptionalFile(options.locationsPath);
+  const connectionLocations = connectionLocationsText ? parseCSV(connectionLocationsText) : [];
   const nameToLocation: Map<string, string> = new Map();
   for (const row of connectionLocations) {
     const normalizedName = normalizePersonName(row["Name"]);
@@ -246,7 +329,11 @@ function main() {
       nameToLocation.set(normalizedName, location);
     }
   }
-  console.log(`  Connection locations indexed: ${nameToLocation.size}`);
+  if (connectionLocationsText) {
+    console.log(`  Connection locations indexed: ${nameToLocation.size}`);
+  } else {
+    console.log("  Connection locations file missing, continuing without location enrichment");
+  }
 
   function findLocationForPerson(personNames: Array<string | null | undefined>): string | null {
     for (const personName of personNames) {
@@ -600,20 +687,22 @@ function main() {
     },
   };
 
-  const outPath = resolve(import.meta.dir, "dashboard.json");
+  const outPath = options.outputPath;
   writeFileSync(outPath, JSON.stringify(output, null, 2));
   console.log(`\nWrote ${outPath}`);
   console.log(`  File size: ${(readFileSync(outPath).length / 1024 / 1024).toFixed(2)} MB`);
 
   // summary
   const allScores = days.flatMap((d) => d.events.map((e) => e.serendipity.score));
+  const minScore = allScores.length > 0 ? Math.min(...allScores) : 0;
+  const maxScore = allScores.length > 0 ? Math.max(...allScores) : 0;
   console.log(`\n=== Summary ===`);
   console.log(`  Events: ${output.stats.total_events}`);
   console.log(`  Days: ${output.stats.total_days}`);
   console.log(`  Unique guests: ${output.stats.total_unique_guests}`);
   console.log(`  Warm connections: ${output.stats.total_warm_connections}`);
   console.log(`  Guest lists: ${output.stats.guest_lists_available} available, ${output.stats.guest_lists_hidden} hidden`);
-  console.log(`  Score range: ${Math.min(...allScores)} - ${Math.max(...allScores)}`);
+  console.log(`  Score range: ${minScore} - ${maxScore}`);
   console.log(`  Top 5 events by score:`);
   const ranked = days.flatMap((d) => d.events).sort((a, b) => b.serendipity.score - a.serendipity.score);
   for (const e of ranked.slice(0, 5)) {
@@ -621,4 +710,9 @@ function main() {
   }
 }
 
-main();
+try {
+  main();
+} catch (error) {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}

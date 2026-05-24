@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build:data": "bun run src/data/build-dashboard-data.ts",
+    "build:data:help": "bun run src/data/build-dashboard-data.ts --help",
+    "dev:with-data": "bun run build:data && bun run dev",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
