@@ -24,7 +24,7 @@ export function PeopleExplorer({
     }
 
     const topCity = [...cityCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-    return topCity ? `${topCity} (event city)` : null;
+    return topCity ?? null;
   }
 
   const filtered = useMemo(() => {
