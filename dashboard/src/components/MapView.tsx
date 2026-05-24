@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 
 import { useEventData } from "../hooks/useEventData";
 import type { EnrichedEvent } from "../lib/types";
@@ -83,9 +81,47 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
   const [mode, setMode] = useState<FilterMode>("all");
   const [selectedDay, setSelectedDay] = useState<string>(data.days[0]?.date ?? "");
   const [geoCache, setGeoCache] = useState<Record<string, Coordinates>>({});
+  const [leafletReady, setLeafletReady] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markersLayerRef = useRef<L.LayerGroup | null>(null);
+  const mapRef = useRef<any | null>(null);
+  const markersLayerRef = useRef<any | null>(null);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const existing = document.getElementById("leaflet-runtime-css");
+    if (existing) return;
+
+    const link = document.createElement("link");
+    link.id = "leaflet-runtime-css";
+    link.rel = "stylesheet";
+    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    link.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+    link.crossOrigin = "";
+    document.head.appendChild(link);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if ((window as any).L) {
+      setLeafletReady(true);
+      return;
+    }
+
+    const existing = document.getElementById("leaflet-runtime-js");
+    if (existing) {
+      existing.addEventListener("load", () => setLeafletReady(true), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = "leaflet-runtime-js";
+    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    script.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
+    script.crossOrigin = "";
+    script.async = true;
+    script.addEventListener("load", () => setLeafletReady(true), { once: true });
+    document.head.appendChild(script);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -183,7 +219,9 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
   }, [filteredEvents, geoCache]);
 
   useEffect(() => {
-    if (mapRef.current || !mapContainerRef.current) return;
+    if (!leafletReady || mapRef.current || !mapContainerRef.current) return;
+    const L = (window as any).L;
+    if (!L) return;
 
     const map = L.map(mapContainerRef.current, {
       zoomControl: true,
@@ -204,9 +242,13 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
       mapRef.current = null;
       markersLayerRef.current = null;
     };
-  }, []);
+  }, [leafletReady]);
 
   useEffect(() => {
+    if (!leafletReady) return;
+    const L = (window as any).L;
+    if (!L) return;
+
     const map = mapRef.current;
     const layer = markersLayerRef.current;
     if (!map || !layer) return;
@@ -271,7 +313,7 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
 
     const bounds = L.latLngBounds(latLngs);
     map.fitBounds(bounds.pad(0.2), { animate: true });
-  }, [onSelectEvent, points]);
+  }, [leafletReady, onSelectEvent, points]);
 
   return (
     <div className="space-y-5">
