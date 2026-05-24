@@ -39,12 +39,48 @@ bun run dev
 
 Open the local URL printed by Vite (usually `http://localhost:5173`).
 
+## Providing your Luma calendar (`--ics`)
+
+Every `doctor` and `enrich` run needs your **personal** Luma calendar feed (all events you host, attend, or are invited to). You can supply it in any of these ways:
+
+### Option 1: Run the CLI yourself
+
+Follow the [end-to-end quickstart](#end-to-end-quickstart) and pass `--ics` on `doctor` and `enrich`. This is the default path if you have terminal access and are comfortable with `bun login`.
+
+### Option 2: Share a local `.ics` file
+
+If you already have the feed saved on disk (for example after opening your subscription URL in a browser and saving the file, or exporting from Apple Calendar / Google Calendar after subscribing), pass the **absolute path** to that file:
+
+```bash
+bun run src/cli/index.ts enrich --ics /absolute/path/to/Luma.ics --out /tmp/luma-enriched.json
+```
+
+### Option 3: Share your ICS subscription URL
+
+This is usually the easiest handoff when someone else (or an agent) is helping you set up. The URL is a private feed tied to your Luma account — treat it like a password.
+
+**Where to find it in Luma**
+
+1. Open **[Luma Settings](https://lu.ma/settings)** (`https://lu.ma/settings`) — click your avatar, then **Settings**, or go directly to that URL while signed in.
+2. Scroll to **Third Party Accounts**.
+3. Open **Calendar Syncing**.
+4. Click **Add iCal Subscription**.
+5. Pick a calendar app (Google, Apple, or Outlook). The flow will expose a subscription link — copy it. It looks like:
+
+   `https://api2.luma.com/ics/get?entity=user&id=icssk-...`
+
+   If you only see `webcal://` at the start, change the scheme to `https://` before passing it to the CLI.
+
+You can paste that URL into `--ics` on `doctor` and `enrich`, or send it to whoever is running the tool for you.
+
+Official reference: [Luma iCal syncing help](https://help.luma.com/p/ical-syncing) (section **Your Personal Events**).
+
 ## Prerequisites
 
 - macOS/Linux terminal access
 - Bun 1.0+ (`bun --version`)
 - Node.js 20+ (`node --version`)
-- A personal Luma ICS URL or local `.ics` file
+- A personal Luma ICS URL or local `.ics` file (see [Providing your Luma calendar](#providing-your-luma-calendar---ics) above)
 - LinkedIn export files:
   - `linkedin-data-export/Connections.csv` (required)
   - `linkedin-data-export/messages.csv` (required)
