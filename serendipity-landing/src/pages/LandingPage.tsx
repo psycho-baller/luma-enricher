@@ -88,7 +88,7 @@ export function LandingPage() {
 
         <section id="live-numbers" className="mx-auto w-full max-w-6xl px-6 pb-20">
           <div className="mb-6">
-            <p className="value-kicker">from the demo data</p>
+            <p className="value-kicker">from my personal data</p>
           </div>
           <StatsBar stats={demoStats} />
           <div className="mt-6 grid gap-4 md:grid-cols-3">

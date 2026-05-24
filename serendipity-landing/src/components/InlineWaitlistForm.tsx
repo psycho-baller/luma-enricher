@@ -107,7 +107,7 @@ export function InlineWaitlistForm({
           disabled={isLoading || isJoined}
           className="h-10 min-w-[8.1rem] shrink-0 rounded-full bg-[var(--color-accent-400)] px-5 text-sm font-semibold leading-none text-[var(--color-surface-950)] transition-colors duration-200 hover:bg-[var(--color-accent-500)] disabled:cursor-default disabled:opacity-100"
         >
-          {isJoined ? "Joined" : isLoading ? "Joining..." : "Join waitlist"}
+          {isJoined ? "Joined" : isLoading ? "Joining..." : "i want this"}
         </button>
       </div>
 
