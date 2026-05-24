@@ -1,0 +1,3 @@
+[submodule "serendipity-landing"]
+	path = serendipity-landing
+	url = https://github.com/psycho-baller/serendipity-landing.git
