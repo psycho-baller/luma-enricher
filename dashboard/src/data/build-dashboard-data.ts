@@ -53,6 +53,7 @@ interface EnrichedEvent {
 interface PersonSummary {
   api_id: string;
   name: string;
+  location: string | null;
   bio: string | null;
   avatar_url: string | null;
   linkedin_slug: string | null;
@@ -131,6 +132,16 @@ function extractLinkedInSlug(handle: string | null | undefined): string | null {
   if (!handle) return null;
   const slug = handle.replace(/^\/in\//, "").replace(/^\/company\//, "").replace(/\/$/, "").toLowerCase();
   return slug || null;
+}
+
+function normalizePersonName(name: string | null | undefined): string | null {
+  if (!name) return null;
+  const normalized = name
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return normalized || null;
 }
 
 function timeOverlaps(a: { start_utc: string; end_utc: string }, b: { start_utc: string; end_utc: string }): boolean {
@@ -220,6 +231,33 @@ function main() {
   }
   console.log(`  Message recency indexed: ${slugToLastMessage.size} people`);
 
+  // 3b. read custom connection locations
+  const connectionLocationsText = readFileSync(
+    resolve("/Users/rami/Documents/life-os/network/custom-data/connection_locations.csv"),
+    "utf-8"
+  );
+  const connectionLocations = parseCSV(connectionLocationsText);
+  const nameToLocation: Map<string, string> = new Map();
+  for (const row of connectionLocations) {
+    const normalizedName = normalizePersonName(row["Name"]);
+    const location = (row["Location"] ?? "").trim();
+    if (!normalizedName || !location || location.toLowerCase() === "unknown") continue;
+    if (!nameToLocation.has(normalizedName)) {
+      nameToLocation.set(normalizedName, location);
+    }
+  }
+  console.log(`  Connection locations indexed: ${nameToLocation.size}`);
+
+  function findLocationForPerson(personNames: Array<string | null | undefined>): string | null {
+    for (const personName of personNames) {
+      const normalized = normalizePersonName(personName);
+      if (!normalized) continue;
+      const location = nameToLocation.get(normalized);
+      if (location) return location;
+    }
+    return null;
+  }
+
   // 4. build people index from all guests across all events
   const peopleIndex: Map<string, PersonSummary> = new Map();
   const personEventMap: Map<string, Set<string>> = new Map();
@@ -248,6 +286,10 @@ function main() {
         peopleIndex.set(apiId, {
           api_id: apiId,
           name: raw.name ?? g.name ?? "",
+          location: findLocationForPerson([
+            raw.name ?? g.name ?? "",
+            conn ? `${conn.firstName} ${conn.lastName}` : null,
+          ]),
           bio: raw.bio_short ?? null,
           avatar_url: raw.avatar_url ?? g.avatar_url ?? null,
           linkedin_slug: slug,
@@ -276,6 +318,10 @@ function main() {
         peopleIndex.set(apiId, {
           api_id: apiId,
           name: raw.name ?? h.name ?? "",
+          location: findLocationForPerson([
+            raw.name ?? h.name ?? "",
+            conn ? `${conn.firstName} ${conn.lastName}` : null,
+          ]),
           bio: raw.bio_short ?? null,
           avatar_url: raw.avatar_url ?? h.avatar_url ?? null,
           linkedin_slug: slug,
@@ -425,6 +471,7 @@ function main() {
       return peopleIndex.get(apiId) ?? {
         api_id: apiId ?? "",
         name: raw.name ?? h.name ?? "",
+        location: null,
         bio: raw.bio_short ?? null,
         avatar_url: raw.avatar_url ?? h.avatar_url ?? null,
         linkedin_slug: null,
@@ -446,6 +493,7 @@ function main() {
       return peopleIndex.get(apiId) ?? {
         api_id: apiId ?? "",
         name: raw.name ?? fg.name ?? "",
+        location: null,
         bio: raw.bio_short ?? null,
         avatar_url: raw.avatar_url ?? fg.avatar_url ?? null,
         linkedin_slug: null,

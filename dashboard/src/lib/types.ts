@@ -76,6 +76,7 @@ export interface ScoreBreakdown {
 export interface PersonSummary {
   api_id: string;
   name: string;
+  location: string | null;
   bio: string | null;
   avatar_url: string | null;
   linkedin_slug: string | null;
