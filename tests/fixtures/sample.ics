@@ -1,0 +1,43 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Luma//Luma//EN
+X-WR-CALNAME:Luma
+BEGIN:VEVENT
+DTSTART:20260525T140000Z
+DTEND:20260525T153000Z
+DTSTAMP:20260523T155957Z
+ORGANIZER;CN="Land to Innovate":MAILTO:calendar-invite@lu.ma
+UID:evt-testGoing@events.lu.ma
+SUMMARY:Reimagining Education in the Age of AI
+DESCRIPTION:Get up-to-date information at: https://luma.com/education-ai?pk=g-testCalendar\n\nAddress:\nToronto, Ontario\nCanada\n\nA useful event\, with commas.\n\nHosted by Land to Innovate
+LOCATION:60 Scarsdale Rd Unit 100, North York, ON M3B 2R7
+GEO:43.7615;-79.3491
+STATUS:TENTATIVE
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260526T010000Z
+DTEND:20260526T023000Z
+DTSTAMP:20260523T155957Z
+ORGANIZER;CN="Virtual Host":MAILTO:calendar-invite@lu.ma
+UID:evt-testInterested@events.lu.ma
+SUMMARY:Virtual Founder Jam
+DESCRIPTION:Get up-to-date information at: https://luma.com/founderjam?pk=g-testCalendar\n\nClick to join: https://luma.com/join/g-testCalendar\n\nA virtual event with a folded
+ continuation line.
+LOCATION:https://luma.com/join/g-testCalendar
+STATUS:TENTATIVE
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260527T180000Z
+DTEND:20260527T190000Z
+DTSTAMP:20260523T155957Z
+ORGANIZER;CN="Hidden Guest Host":MAILTO:calendar-invite@lu.ma
+UID:evt-testHidden@events.lu.ma
+SUMMARY:Hidden Guest List Event
+DESCRIPTION:Get up-to-date information at: https://luma.com/hidden?pk=g-testCalendar\n\nAnother event.
+LOCATION:Toronto, ON, Canada
+STATUS:TENTATIVE
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

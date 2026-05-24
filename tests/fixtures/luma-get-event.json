@@ -1,0 +1,33 @@
+{
+  "event": {
+    "api_id": "evt-testGoing",
+    "show_guest_list": true,
+    "capacity": 100,
+    "waitlist_status": "enabled"
+  },
+  "ticket_info": {
+    "spots_remaining": 12,
+    "is_near_capacity": false,
+    "is_sold_out": false,
+    "require_approval": false,
+    "is_free": true
+  },
+  "guest_data": {
+    "approval_status": "approved",
+    "ticket_type": "General Admission",
+    "registered_at_utc": "2026-05-10T14:22:00Z",
+    "checked_in": false
+  },
+  "role": null,
+  "hosts": [
+    {
+      "api_id": "usr-host",
+      "name": "Host Person",
+      "username": "hostperson",
+      "avatar_url": "https://example.com/avatar.png",
+      "is_verified": true,
+      "twitter": "host"
+    }
+  ],
+  "featured_guests": []
+}

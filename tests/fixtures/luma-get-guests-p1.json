@@ -1,0 +1,16 @@
+{
+  "total_count": 2,
+  "going_count": 2,
+  "waitlist_count": 0,
+  "has_more": true,
+  "next_cursor": "cursor-2",
+  "guests": [
+    {
+      "api_id": "usr-1",
+      "name": "Jane Doe",
+      "username": "janedoe",
+      "approval_status": "approved",
+      "registered_at_utc": "2026-05-11T10:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "total_count": 2,
+  "going_count": 2,
+  "waitlist_count": 0,
+  "has_more": false,
+  "guests": [
+    {
+      "api_id": "usr-2",
+      "name": "Sam Example",
+      "username": "samexample",
+      "approval_status": "approved",
+      "registered_at_utc": "2026-05-11T11:00:00Z"
+    }
+  ]
+}
