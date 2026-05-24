@@ -7,6 +7,7 @@ import { PersonModal } from "./components/PersonModal";
 import { PeopleExplorer } from "./components/PeopleExplorer";
 import { ScheduleView } from "./components/ScheduleView";
 import { MapView } from "./components/MapView";
+import logo from "./assets/just-serendipity-logo.svg";
 
 type Tab = "timeline" | "people" | "schedule" | "map";
 
@@ -33,12 +34,10 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-400)] text-[var(--color-surface-950)] flex items-center justify-center font-bold text-sm">
-                EI
-              </div>
+              <img src={logo} alt="Serendipity logo" className="h-8 w-8 rounded-lg object-cover" />
               <div>
                 <h1 className="text-base font-semibold text-[var(--color-text-primary)]">
-                  Event Intelligence
+                  Serendipity
                 </h1>
                 <p className="text-xs text-[var(--color-text-muted)] mt-0.5 font-mono">Toronto Tech Week / 2026</p>
               </div>

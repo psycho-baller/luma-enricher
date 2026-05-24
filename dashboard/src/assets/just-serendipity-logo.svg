@@ -1,0 +1,43 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="58" y1="64" x2="450" y2="462" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C1126" />
+      <stop offset="1" stop-color="#05070F" />
+    </linearGradient>
+    <linearGradient id="sGradient" x1="132" y1="130" x2="380" y2="376" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#63F6E4" />
+      <stop offset="0.55" stop-color="#7D9DFF" />
+      <stop offset="1" stop-color="#B36CFF" />
+    </linearGradient>
+    <linearGradient id="orbGradient" x1="315" y1="148" x2="363" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A7FFF5" />
+      <stop offset="1" stop-color="#7D9DFF" />
+    </linearGradient>
+    <filter id="softGlow" x="86" y="84" width="342" height="344" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur" />
+    </filter>
+  </defs>
+
+  <rect x="58" y="58" width="396" height="396" rx="104" fill="url(#bgGradient)" />
+  <rect x="58.5" y="58.5" width="395" height="395" rx="103.5" stroke="#1B264A" stroke-opacity="0.9" />
+
+  <g filter="url(#softGlow)">
+    <path
+      d="M346 146C313 111 256 109 219 136C189 157 183 197 214 214L291 255C324 272 320 321 283 336C254 348 220 339 198 317"
+      stroke="url(#sGradient)"
+      stroke-width="34"
+      stroke-linecap="round"
+    />
+    <path
+      d="M166 366C199 401 256 403 293 376C323 355 329 315 298 298L221 257C188 240 192 191 229 176C258 164 292 173 314 195"
+      stroke="url(#sGradient)"
+      stroke-width="34"
+      stroke-linecap="round"
+      stroke-opacity="0.95"
+    />
+  </g>
+
+  <circle cx="340" cy="172" r="22" fill="url(#orbGradient)" />
+</svg>

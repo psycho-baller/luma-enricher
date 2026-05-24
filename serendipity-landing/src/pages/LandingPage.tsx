@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import { InlineWaitlistForm } from "../components/InlineWaitlistForm";
+import logo from "../assets/just-serendipity-logo.svg";
 import landingStats from "../data/landing-stats.json";
 
 export function LandingPage() {
@@ -9,9 +10,7 @@ export function LandingPage() {
       <header className="landing-header">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--color-accent-400)] text-[var(--color-surface-950)]">
-              <span className="font-semibold tracking-tight">S</span>
-            </div>
+            <img src={logo} alt="Serendipity logo" className="h-9 w-9 rounded-xl object-cover" />
             <div>
               <p className="text-sm font-semibold text-[var(--color-text-primary)]">Serendipity</p>
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-text-muted)]">

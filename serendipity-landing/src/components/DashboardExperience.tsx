@@ -8,6 +8,7 @@ import { PeopleExplorer } from "./PeopleExplorer";
 import { PersonModal } from "./PersonModal";
 import { ScheduleView } from "./ScheduleView";
 import { StatsBar } from "./StatsBar";
+import logo from "../assets/just-serendipity-logo.svg";
 import { useEventData } from "../hooks/useEventData";
 
 type Tab = "timeline" | "people" | "schedule" | "map";
@@ -47,12 +48,10 @@ export function DashboardExperience() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-400)] text-sm font-bold text-[var(--color-surface-950)]">
-                SI
-              </div>
+              <img src={logo} alt="Serendipity logo" className="h-8 w-8 rounded-lg object-cover" />
               <div>
                 <h1 className="text-base font-semibold text-[var(--color-text-primary)]">
-                  Serendipity Intelligence
+                  Serendipity
                 </h1>
                 <p className="mt-0.5 font-mono text-xs text-[var(--color-text-muted)]">
                   Toronto Tech Week / 2026 demo
