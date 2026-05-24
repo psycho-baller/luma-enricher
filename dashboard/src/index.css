@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* dark palette */
+  --color-surface-950: #0a0a0f;
+  --color-surface-900: #111118;
+  --color-surface-800: #1a1a24;
+  --color-surface-700: #25253a;
+  --color-surface-600: #3a3a55;
+
+  /* text */
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #9999b3;
+  --color-text-muted: #666680;
+
+  /* accent: warm amber-orange for serendipity */
+  --color-accent-50: #fff8eb;
+  --color-accent-100: #ffedc2;
+  --color-accent-200: #ffd980;
+  --color-accent-400: #f5a623;
+  --color-accent-500: #e8920a;
+  --color-accent-600: #c77a08;
+
+  /* semantic */
+  --color-connection: #34d399;
+  --color-connection-bg: #34d39918;
+  --color-super-connector: #a78bfa;
+  --color-super-connector-bg: #a78bfa18;
+  --color-conflict: #f87171;
+  --color-conflict-bg: #f8717118;
+  --color-limited: #666680;
+
+  /* score gradient stops */
+  --color-score-low: #ef4444;
+  --color-score-mid: #f59e0b;
+  --color-score-high: #22c55e;
+
+  /* spacing */
+  --spacing-card: 1.25rem;
+
+  /* border radius */
+  --radius-card: 0.75rem;
+  --radius-badge: 0.375rem;
+
+  /* transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* base resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-surface-950);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-600);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-700);
+}
+
+/* animation keyframes */
+@keyframes gauge-fill {
+  from { stroke-dashoffset: 283; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-in {
+  animation: fade-in var(--transition-normal) ease-out both;
+}
+
+.animate-slide-in {
+  animation: slide-in-right var(--transition-slow) ease-out both;
+}
+
+/* stagger children */
+.stagger-children > * {
+  animation: fade-in var(--transition-normal) ease-out both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
