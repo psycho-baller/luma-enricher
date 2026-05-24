@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { DayTimeline } from "./DayTimeline";
 import { EventDetailPanel } from "./EventDetailPanel";
@@ -27,6 +28,19 @@ export function DashboardExperience() {
 
   return (
     <div className="app-bg bg-[var(--color-surface-950)]">
+      <div className="border-b border-[var(--color-accent-400)]/20 bg-[var(--color-accent-bg)]/40">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-2">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-accent-400)]">
+            demo mode — sample names and avatars only
+          </p>
+          <Link
+            to="/"
+            className="shrink-0 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)]"
+          >
+            back to landing
+          </Link>
+        </div>
+      </div>
       <header className="sticky top-0 z-30 border-b border-white/5 bg-[var(--color-surface-950)]/90 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex h-16 items-center justify-between">
@@ -39,7 +53,7 @@ export function DashboardExperience() {
                   Serendipity Intelligence
                 </h1>
                 <p className="mt-0.5 font-mono text-xs text-[var(--color-text-muted)]">
-                  Toronto Tech Week / 2026
+                  Toronto Tech Week / 2026 demo
                 </p>
               </div>
             </div>

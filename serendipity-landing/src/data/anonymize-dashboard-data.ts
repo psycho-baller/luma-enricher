@@ -1,16 +1,17 @@
 /**
- * Replaces real names, avatars, and profile URLs in dashboard.json with deterministic demo data.
+ * Replaces real names, avatars, and profile URLs in dashboard.demo.json with deterministic demo data.
  * Run from serendipity-landing: bun run src/data/anonymize-dashboard-data.ts
  *
- * Reads dashboard.source.json when present (real export); otherwise reads dashboard.json.
- * Writes anonymized output to dashboard.json.
+ * Reads dashboard.source.json when present (real export); otherwise reads dashboard.demo.json.
+ * Writes anonymized output to dashboard.demo.json and refreshes landing-stats.json.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 const DATA_DIR = import.meta.dir;
 const SOURCE_PATH = resolve(DATA_DIR, "dashboard.source.json");
-const OUT_PATH = resolve(DATA_DIR, "dashboard.json");
+const OUT_PATH = resolve(DATA_DIR, "dashboard.demo.json");
+const LANDING_STATS_PATH = resolve(DATA_DIR, "landing-stats.json");
 
 const DEMO_USER_NAME = "Jordan Lee";
 const DEMO_USER_SLUG = "jordan-lee-demo";
@@ -135,7 +136,7 @@ function walkAndAnonymize(node: unknown, demoUserApiId: string): void {
 function main() {
   const inputPath = existsSync(SOURCE_PATH) ? SOURCE_PATH : OUT_PATH;
   if (!existsSync(inputPath)) {
-    console.error("No dashboard.source.json or dashboard.json found.");
+    console.error("No dashboard.source.json or dashboard.demo.json found.");
     process.exit(1);
   }
 
@@ -164,7 +165,26 @@ function main() {
   data.generated_at = new Date().toISOString();
   writeFileSync(OUT_PATH, JSON.stringify(data, null, 2));
 
+  const events = data.days.flatMap((day: { events: { serendipity: { score: number; warm_connections: string[] } }[] }) => day.events);
+  const landingStats = {
+    total_events: data.stats.total_events,
+    total_unique_guests: data.stats.total_unique_guests,
+    average_serendipity_score: Math.round(
+      events.reduce((sum: number, event: { serendipity: { score: number } }) => sum + event.serendipity.score, 0) /
+        Math.max(events.length, 1)
+    ),
+    warm_intro_paths: events.reduce(
+      (sum: number, event: { serendipity: { warm_connections: string[] } }) =>
+        sum + event.serendipity.warm_connections.length,
+      0
+    ),
+    events_with_high_signal: events.filter((event: { serendipity: { score: number } }) => event.serendipity.score >= 70)
+      .length,
+  };
+  writeFileSync(LANDING_STATS_PATH, JSON.stringify(landingStats, null, 2) + "\n");
+
   console.log(`Wrote anonymized demo data to ${OUT_PATH}`);
+  console.log(`Wrote landing stats to ${LANDING_STATS_PATH}`);
   console.log(`  Source: ${inputPath}`);
   console.log(`  People: ${Object.keys(data.people).length}`);
 }

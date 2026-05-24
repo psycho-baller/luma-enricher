@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 
-# real export kept locally; landing ships anonymized dashboard.json only
+# real export kept locally; landing ships anonymized dashboard.demo.json only
 src/data/dashboard.source.json
 
 # Editor directories and files
