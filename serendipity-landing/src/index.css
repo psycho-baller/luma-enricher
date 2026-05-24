@@ -223,3 +223,15 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.leaflet-container {
+  background: #0b1717;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 10px;
+}
+
+.leaflet-popup-content {
+  margin: 0.75rem;
+}

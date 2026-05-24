@@ -3,13 +3,14 @@ import { Link } from "react-router-dom";
 
 import { DayTimeline } from "./DayTimeline";
 import { EventDetailPanel } from "./EventDetailPanel";
+import { MapView } from "./MapView";
 import { PeopleExplorer } from "./PeopleExplorer";
 import { PersonModal } from "./PersonModal";
 import { ScheduleView } from "./ScheduleView";
 import { StatsBar } from "./StatsBar";
 import { useEventData } from "../hooks/useEventData";
 
-type Tab = "timeline" | "people" | "schedule";
+type Tab = "timeline" | "people" | "schedule" | "map";
 
 export function DashboardExperience() {
   const { data, getEvent, getPerson } = useEventData();
@@ -24,6 +25,7 @@ export function DashboardExperience() {
     { key: "timeline", label: "Timeline", icon: "📅" },
     { key: "people", label: "People", icon: "👥" },
     { key: "schedule", label: "My Schedule", icon: "✓" },
+    { key: "map", label: "Map", icon: "🗺️" },
   ];
 
   return (
@@ -104,6 +106,12 @@ export function DashboardExperience() {
         {activeTab === "schedule" && (
           <div className="animate-fade-in">
             <ScheduleView />
+          </div>
+        )}
+
+        {activeTab === "map" && (
+          <div className="animate-fade-in">
+            <MapView onSelectEvent={setSelectedEventId} />
           </div>
         )}
       </main>
