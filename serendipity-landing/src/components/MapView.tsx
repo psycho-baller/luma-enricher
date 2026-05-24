@@ -32,6 +32,12 @@ const CITY_COORDINATES: Record<string, Coordinates> = {
   "calgary, ab": { lat: 51.0447, lng: -114.0719 },
 };
 
+function getPinColor(score: number): string {
+  if (score >= 70) return "#4ade80";
+  if (score >= 45) return "#facc15";
+  return "#fb7185";
+}
+
 function hashOffset(seed: string): number {
   let hash = 0;
   for (let i = 0; i < seed.length; i += 1) {
@@ -184,8 +190,9 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
       scrollWheelZoom: true,
     }).setView([DEFAULT_CENTER.lat, DEFAULT_CENTER.lng], 10);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     }).addTo(map);
 
     const layer = L.layerGroup().addTo(map);
@@ -217,11 +224,11 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
       latLngs.push(latLng);
 
       const marker = L.circleMarker(latLng, {
-        color: "#ACCFFA",
-        fillColor: "#ACCFFA",
-        fillOpacity: 0.88,
+        color: getPinColor(point.event.serendipity.score),
+        fillColor: getPinColor(point.event.serendipity.score),
+        fillOpacity: 0.92,
         radius: 8,
-        weight: 1,
+        weight: 1.5,
       });
 
       const safeTitle = escapeHtml(point.event.title);
@@ -231,16 +238,16 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
       const popupContainer = document.createElement("div");
       popupContainer.className = "serendipity-popup-content";
       popupContainer.innerHTML = `
-        <div class="space-y-2 min-w-[250px]">
-          <h3 class="text-sm font-semibold text-slate-900">${safeTitle}</h3>
-          <p class="text-xs text-slate-600">${safeDayLabel}</p>
-          <p class="text-xs text-slate-700">${safeStart}</p>
-          <p class="text-xs text-slate-700">serendipity score: <strong>${point.event.serendipity.score}</strong></p>
-          <p class="text-xs text-slate-700">warm intros: <strong>${point.event.serendipity.warm_connections.length}</strong></p>
-          <p class="text-xs text-slate-700">guest list: <strong>${point.event.guest_list?.total_count ?? 0}</strong></p>
-          <div class="flex items-center justify-between pt-1">
-            <button type="button" data-action="details" class="rounded-md bg-slate-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-slate-800">details</button>
-            <a href="${point.event.url}" target="_blank" rel="noreferrer" class="text-xs font-medium text-slate-800 underline decoration-slate-300 underline-offset-2">event page</a>
+        <div class="serendipity-popup-card">
+          <h3 class="serendipity-popup-title">${safeTitle}</h3>
+          <p class="serendipity-popup-kicker">${safeDayLabel}</p>
+          <p class="serendipity-popup-row">${safeStart}</p>
+          <p class="serendipity-popup-row">serendipity score: <strong>${point.event.serendipity.score}</strong></p>
+          <p class="serendipity-popup-row">warm intros: <strong>${point.event.serendipity.warm_connections.length}</strong></p>
+          <p class="serendipity-popup-row">guest list: <strong>${point.event.guest_list?.total_count ?? 0}</strong></p>
+          <div class="serendipity-popup-actions">
+            <button type="button" data-action="details" class="serendipity-popup-button">details</button>
+            <a href="${point.event.url}" target="_blank" rel="noreferrer" class="serendipity-popup-link">event page</a>
           </div>
         </div>
       `;
@@ -253,7 +260,7 @@ export function MapView({ onSelectEvent }: { onSelectEvent: (eventId: string) =>
         });
       }
 
-      marker.bindPopup(popupContainer);
+      marker.bindPopup(popupContainer, { className: "serendipity-leaflet-popup" });
       marker.addTo(layer);
     }
 
