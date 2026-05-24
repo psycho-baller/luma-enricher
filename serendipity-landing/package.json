@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "data:anonymize": "bun run src/data/anonymize-dashboard-data.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

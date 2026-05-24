@@ -38,7 +38,7 @@ export default function App() {
             <div>
               <p className="text-sm font-semibold text-[var(--color-text-primary)]">Serendipity</p>
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-text-muted)]">
-                Toronto Tech Week Intelligence
+                for Toronto Tech Week
               </p>
             </div>
           </div>
@@ -54,32 +54,32 @@ export default function App() {
           <div className="mx-auto w-full max-w-5xl px-6 pb-22 pt-28 text-center md:pt-36">
             <div className="mx-auto flex max-w-4xl flex-col items-center gap-8">
               <p className="inline-flex rounded-full border border-[var(--color-surface-700)] bg-black/25 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-accent-400)]">
-                project serendipity
+                toronto tech week
               </p>
               <h1 className="max-w-4xl text-5xl leading-[0.9] font-semibold tracking-[-0.045em] text-[var(--color-text-primary)] md:text-7xl">
-                Make every Toronto Tech Week room feel pre-won.
+                Stop guessing which events are worth your night.
               </h1>
               <p className="max-w-3xl text-lg leading-8 text-[var(--color-text-secondary)]">
-                Serendipity ranks events by relationship upside, surfaces your warmest intro paths, and tells you
-                where your time compounds.
+                Serendipity looks at who's going, who you already know, and who could introduce you — then ranks
+                events so you're not picking blindly.
               </p>
               <InlineWaitlistForm
                 align="center"
                 className="w-full max-w-[36rem]"
-                caption="Join the private alpha and test Serendipity before launch."
+                caption="Want early access? Leave your email."
               />
               <div className="flex flex-col items-center gap-3 sm:flex-row">
                 <button
                   onClick={() => setShowDashboard(true)}
                   className="w-full rounded-xl bg-[var(--color-accent-400)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[var(--color-surface-950)] transition-colors hover:bg-[var(--color-accent-500)] sm:w-auto"
                 >
-                  open interactive dashboard
+                  try the demo
                 </button>
                 <a
                   href="#live-numbers"
                   className="w-full rounded-xl border border-[var(--color-surface-700)] px-5 py-3 text-sm font-medium uppercase tracking-[0.12em] text-[var(--color-text-primary)] transition-colors hover:border-[var(--color-accent-400)] hover:text-[var(--color-accent-400)] sm:w-auto"
                 >
-                  see live numbers
+                  see sample stats
                 </a>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function App() {
 
         <section id="live-numbers" className="mx-auto w-full max-w-6xl px-6 pb-20">
           <div className="mb-6">
-            <p className="value-kicker">live numbers from your current dataset</p>
+            <p className="value-kicker">from the demo data</p>
           </div>
           <div className="grid gap-4 md:grid-cols-4">
             <article className="stat-card">
@@ -112,19 +112,19 @@ export default function App() {
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <article className="value-card">
-              <p className="value-kicker">signal-first scoring</p>
-              <h3>Know what is worth your evening.</h3>
-              <p>Every event is ranked by relationship upside and intro quality.</p>
+              <p className="value-kicker">event rankings</p>
+              <h3>Pick the right room.</h3>
+              <p>Each event gets a score based on who's there and who you could meet through someone you know.</p>
             </article>
             <article className="value-card">
-              <p className="value-kicker">relationship context</p>
-              <h3>Walk in with context.</h3>
-              <p>See people, role context, and recency so outreach is intentional.</p>
+              <p className="value-kicker">who's going</p>
+              <h3>Show up knowing names.</h3>
+              <p>See attendees, what they do, and whether you've messaged before.</p>
             </article>
             <article className="value-card">
-              <p className="value-kicker">schedule control</p>
-              <h3>Protect your highest-leverage slots.</h3>
-              <p>Avoid overlap traps and choose the room with the biggest upside.</p>
+              <p className="value-kicker">your calendar</p>
+              <h3>Don't double-book the good ones.</h3>
+              <p>Spot conflicts when two events overlap and decide which one to keep.</p>
             </article>
           </div>
         </section>

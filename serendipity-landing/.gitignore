@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# real export kept locally; landing ships anonymized dashboard.json only
+src/data/dashboard.source.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
