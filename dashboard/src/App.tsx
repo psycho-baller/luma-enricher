@@ -25,37 +25,35 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--color-surface-950)]">
+    <div className="app-bg bg-[var(--color-surface-950)]">
       {/* top bar */}
-      <header className="sticky top-0 z-30 bg-[var(--color-surface-950)]/95 backdrop-blur-md
-        border-b border-[var(--color-surface-700)]/50">
-        <div className="max-w-6xl mx-auto px-4">
+      <header className="sticky top-0 z-30 border-b border-white/5 bg-[var(--color-surface-950)]/90 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--color-accent-400)] to-[var(--color-accent-600)]
-                flex items-center justify-center text-sm font-bold text-[var(--color-surface-950)]">
+              <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-400)] text-[var(--color-surface-950)] flex items-center justify-center font-bold text-sm">
                 EI
               </div>
               <div>
-                <h1 className="text-sm font-bold text-[var(--color-text-primary)] leading-tight">
+                <h1 className="text-base font-semibold text-[var(--color-text-primary)]">
                   Event Intelligence
                 </h1>
-                <p className="text-xs text-[var(--color-text-muted)]">Toronto Tech Week 2026</p>
+                <p className="text-xs text-[var(--color-text-muted)] mt-0.5 font-mono">Toronto Tech Week / 2026</p>
               </div>
             </div>
 
-            <nav className="flex gap-1">
+            <nav className="flex gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
                     ${activeTab === tab.key
-                      ? "bg-[var(--color-accent-400)]/15 text-[var(--color-accent-400)]"
+                      ? "bg-[var(--color-accent-bg)] text-[var(--color-accent-400)]"
                       : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-800)]"
                     }`}
                 >
-                  <span className="mr-1.5">{tab.icon}</span>
+                  <span className="mr-2 opacity-70">{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
@@ -64,36 +62,38 @@ export default function App() {
         </div>
       </header>
 
-      {/* stats bar */}
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <StatsBar stats={data.stats} />
-      </div>
-
       {/* main content */}
-      <main className="max-w-6xl mx-auto px-4 pb-12">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         {activeTab === "timeline" && (
-          <div>
-            {data.days.map((day) => (
-              <DayTimeline
-                key={day.date}
-                day={day}
-                selectedEventId={selectedEventId ?? undefined}
-                onSelectEvent={setSelectedEventId}
-              />
-            ))}
+          <div className="space-y-8 animate-fade-in">
+            <StatsBar stats={data.stats} />
+            <div className="grid grid-cols-1 gap-12 mt-8">
+              {data.days.map((day) => (
+                <DayTimeline
+                  key={day.date}
+                  day={day}
+                  selectedEventId={selectedEventId ?? undefined}
+                  onSelectEvent={setSelectedEventId}
+                />
+              ))}
+            </div>
           </div>
         )}
 
         {activeTab === "people" && (
-          <PeopleExplorer onPersonClick={setSelectedPersonId} />
+          <div className="animate-fade-in">
+            <PeopleExplorer onPersonClick={setSelectedPersonId} />
+          </div>
         )}
 
         {activeTab === "schedule" && (
-          <ScheduleView />
+          <div className="animate-fade-in">
+            <ScheduleView />
+          </div>
         )}
       </main>
 
-      {/* event detail panel */}
+      {/* overlays */}
       <EventDetailPanel
         event={selectedEvent}
         onClose={() => setSelectedEventId(null)}
@@ -103,7 +103,6 @@ export default function App() {
         }}
       />
 
-      {/* person modal */}
       <PersonModal
         person={selectedPerson}
         onClose={() => setSelectedPersonId(null)}
