@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { DashboardData, EnrichedEvent, PersonSummary } from "../lib/types";
-import rawData from "../data/dashboard.json";
+import rawData from "dashboard-data-source";
 
 const data = rawData as unknown as DashboardData;
 
